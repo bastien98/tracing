@@ -16,7 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -29,12 +29,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "History.findAll", query = "SELECT h FROM History h"),
     @NamedQuery(name = "History.findById", query = "SELECT h FROM History h WHERE h.id = :id"),
+    @NamedQuery(name = "History.findByUsername", query = "SELECT h FROM History h WHERE h.username = :username"),
     @NamedQuery(name = "History.findByIdcontact", query = "SELECT h FROM History h WHERE h.idcontact = :idcontact"),
-    @NamedQuery(name = "History.findByIduser", query = "SELECT h FROM History h WHERE h.iduser = :iduser"),
-    @NamedQuery(name = "History.findHistory", query = "SELECT h FROM History h WHERE h.iduser = :iduser"),
-    @NamedQuery(name = "History.findEntity", query = "SELECT c FROM History fromm, History too, Contacts c WHERE fromm.idcontact = too.idcontact AND fromm.iduser != too.iduser AND c.id = too.idcontact AND fromm.iduser = :currentUserId AND too.iduser = :selectedUserId"),
-    @NamedQuery(name = "History.updatedContact", query = "UPDATE Contacts c SET c.sort = :selectedSort, c.addedby = :selectedUser WHERE c.id = :contactID"),
-    })
+    @NamedQuery(name = "History.findEntity", query = "SELECT c FROM History fromm, History too, Contacts c WHERE fromm.idcontact = too.idcontact AND fromm.username != too.username AND c.id = too.idcontact AND fromm.username = :currentUsername AND too.username = :selectedUsername")})
 public class History implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,26 +39,17 @@ public class History implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Basic(optional = false)
-    @NotNull
+    @Size(max = 20)
+    @Column(name = "USERNAME")
+    private String username;
     @Column(name = "IDCONTACT")
-    private int idcontact;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IDUSER")
-    private int iduser;
+    private Integer idcontact;
 
     public History() {
     }
 
     public History(Integer id) {
         this.id = id;
-    }
-
-    public History(Integer id, int idcontact, int iduser) {
-        this.id = id;
-        this.idcontact = idcontact;
-        this.iduser = iduser;
     }
 
     public Integer getId() {
@@ -72,20 +60,20 @@ public class History implements Serializable {
         this.id = id;
     }
 
-    public int getIdcontact() {
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Integer getIdcontact() {
         return idcontact;
     }
 
-    public void setIdcontact(int idcontact) {
+    public void setIdcontact(Integer idcontact) {
         this.idcontact = idcontact;
-    }
-
-    public int getIduser() {
-        return iduser;
-    }
-
-    public void setIduser(int iduser) {
-        this.iduser = iduser;
     }
 
     @Override

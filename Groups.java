@@ -8,10 +8,10 @@ package sessionbeans;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -25,13 +25,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author basti
  */
 @Entity
-@Table(name = "USERS")
+@Table(name = "GROUPS")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
-    @NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u WHERE u.username = :username"),
-    @NamedQuery(name = "Users.findByPassword", query = "SELECT u FROM Users u WHERE u.password = :password")})
-public class Users implements Serializable {
+    @NamedQuery(name = "Groups.findAll", query = "SELECT g FROM Groups g"),
+    @NamedQuery(name = "Groups.findByUsername", query = "SELECT g FROM Groups g WHERE g.username = :username"),
+    @NamedQuery(name = "Groups.findByGroupp", query = "SELECT g FROM Groups g WHERE g.groupp = :groupp")})
+public class Groups implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -40,15 +40,16 @@ public class Users implements Serializable {
     @Column(name = "USERNAME")
     private String username;
     @Size(max = 20)
-    @Column(name = "PASSWORD")
-    private String password;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
-    private Groups groups;
+    @Column(name = "GROUPP")
+    private String groupp;
+    @JoinColumn(name = "USERNAME", referencedColumnName = "USERNAME", insertable = false, updatable = false)
+    @OneToOne(optional = false)
+    private Users users;
 
-    public Users() {
+    public Groups() {
     }
 
-    public Users(String username) {
+    public Groups(String username) {
         this.username = username;
     }
 
@@ -60,20 +61,20 @@ public class Users implements Serializable {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getGroupp() {
+        return groupp;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setGroupp(String groupp) {
+        this.groupp = groupp;
     }
 
-    public Groups getGroups() {
-        return groups;
+    public Users getUsers() {
+        return users;
     }
 
-    public void setGroups(Groups groups) {
-        this.groups = groups;
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
     @Override
@@ -86,10 +87,10 @@ public class Users implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Users)) {
+        if (!(object instanceof Groups)) {
             return false;
         }
-        Users other = (Users) object;
+        Groups other = (Groups) object;
         if ((this.username == null && other.username != null) || (this.username != null && !this.username.equals(other.username))) {
             return false;
         }
@@ -98,7 +99,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "sessionbeans.Users[ username=" + username + " ]";
+        return "sessionbeans.Groups[ username=" + username + " ]";
     }
     
 }

@@ -1,5 +1,6 @@
 package sessionbeans;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -9,56 +10,50 @@ import javax.persistence.PersistenceContext;
 public class contactBean implements contactBeanRemote {
 
     @PersistenceContext private EntityManager em;
-   
     
     @Override
-    public void addHistory(int contactId, int selectedUserId, int currentUserId){
+    public List allUsers(){
+        List users = em.createNamedQuery("Users.findAll").getResultList();
+        return users;
+    }
+    @Override
+    public void addHistory(int idContact, String selectedUsername, String currentUsername){
         em.joinTransaction();
         History history = new History();
         History history1 = new History();
-        history.setIdcontact(contactId);
-        history.setIduser(currentUserId);
-        history1.setIdcontact(contactId);
-        history1.setIduser(selectedUserId);
+        history.setIdcontact(idContact);
+        history.setUsername(currentUsername);
+        history1.setIdcontact(idContact);
+        history1.setUsername(selectedUsername);
         em.persist(history1);
-        em.persist(history);   
+        em.persist(history); 
+    }
+    @Override
+    public List checkHistory(String currentUsername, String selectedUsername){
+        List c = em.createNamedQuery("History.findEntity").setParameter("currentUsername", currentUsername).setParameter("selectedUsername", selectedUsername).getResultList();
+        return c;
     }
     
+   
     @Override
-    public void updateContact(Contacts contact, String selectedSort,int currentUserId)
-    {
-        //em.createNamedQuery("History.updateContact").setParameter("contactId",contactId);
-        Contacts c =em.find(Contacts.class, contact.getId());        
-        em.remove(c);
-       
-        em.joinTransaction();
-        c.setSort(selectedSort);
-        c.setAddedby(currentUserId);
-        em.persist(c);
-        
-        
-        
-        
-    }
-    
-    @Override
-    public Contacts addContact(int currentUserId, String selectedSort){
+    public Contacts addContact(String currentUsername, String selectedSort){
         em.joinTransaction();
         Contacts contact = new Contacts();
         contact.setSort(selectedSort);
-        contact.setAddedby(currentUserId);
+        contact.setAddedby(currentUsername);
         em.persist(contact);
-        return contact;       
+        return contact; 
     }
-    
-    
     @Override
-    public List checkHistory(int currentUserId, int selectedUserId, String selectedSort ){
-        List c = em.createNamedQuery("History.findEntity").setParameter("currentUserId", currentUserId).setParameter("selectedUserId", selectedUserId).getResultList();
-        return c;
+    public void updateContact(Contacts contact, String selectedSort,String currentUsername)
+    {
+        Contacts c =em.find(Contacts.class, contact.getId());
+        em.remove(c);
         
+        em.joinTransaction();
+        c.setSort(selectedSort);
+        c.setAddedby(currentUsername);
+        em.persist(c);
     }
-            
-    
     
 }

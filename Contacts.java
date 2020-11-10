@@ -16,7 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -39,24 +38,18 @@ public class Contacts implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
+    @Size(max = 20)
     @Column(name = "SORT")
     private String sort;
+    @Size(max = 20)
     @Column(name = "ADDEDBY")
-    private Integer addedby;
+    private String addedby;
 
     public Contacts() {
     }
 
     public Contacts(Integer id) {
         this.id = id;
-    }
-
-    public Contacts(Integer id, String sort) {
-        this.id = id;
-        this.sort = sort;
     }
 
     public Integer getId() {
@@ -75,11 +68,11 @@ public class Contacts implements Serializable {
         this.sort = sort;
     }
 
-    public Integer getAddedby() {
+    public String getAddedby() {
         return addedby;
     }
 
-    public void setAddedby(Integer addedby) {
+    public void setAddedby(String addedby) {
         this.addedby = addedby;
     }
 
